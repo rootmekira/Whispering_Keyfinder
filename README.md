@@ -1,34 +1,29 @@
 # Whispering_Keyfinder
  Develop a solution capable of extracting stored Wi-Fi network passwords from a device, all while operating without the necessity for administrative or user privileges.
 
- ```python
-import sqlite3
-import subprocess
+Title: Wi-Fi Password Extractor
 
-# Create a connection to the database
-conn = sqlite3.connect('wifi_passwords.db')
+Description:
+This project offers a solution to extract and store Wi-Fi network passwords from a device without requiring administrative or user privileges. It operates discreetly to gather Wi-Fi passwords and securely stores them in a SQLite database file (.db).
 
-# Create a table to store Wi-Fi passwords
-cursor = conn.cursor()
-cursor.execute('''CREATE TABLE IF NOT EXISTS wifi_passwords
-                  (network_name TEXT, password TEXT)''')
+Overview:
+This repository contains a Python script designed to extract Wi-Fi network names and their associated passwords from a device without the need for elevated privileges. The extracted data is stored in a structured SQLite database file for easy access and reference.
 
-# Retrieve Wi-Fi passwords using netsh command on Windows
-if subprocess.run("netsh wlan show profile", capture_output=True).returncode == 0:
-    output = subprocess.run("netsh wlan show profile", capture_output=True).stdout.decode()
-    profiles = [line.split(":")[1][1:-1] for line in output.split("\n") if "All User Profile" in line]
-    for profile in profiles:
-        try:
-            password_output = subprocess.run(f"netsh wlan show profile name={profile} key=clear",
-                                             capture_output=True).stdout.decode()
-            password = [line.split(":")[1][1:-1] for line in password_output.split("\n") if "Key Content" in line][0]
-            cursor.execute("INSERT INTO wifi_passwords VALUES (?, ?)", (profile, password))
-        except IndexError:
-            continue
+Features:
 
-# Commit the changes to the database
-conn.commit()
+No administrative or user privileges required.
+Silent operation to maintain privacy.
+Secure storage of Wi-Fi network passwords in a .db file.
+Easy access to stored passwords for legitimate purposes.
+Usage:
 
-# Close the database connection
-conn.close()
+Clone or download this repository to your local machine.
+Run the provided Python script to initiate the Wi-Fi password extraction process.
+Extracted Wi-Fi network names and passwords will be stored in a .db file for your convenience.
+Note:
+This script is intended for legitimate and ethical use on your own devices. Please ensure you have the necessary permissions to run this script on the target device.
 
+License:
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+Feel free to use and contribute to this open-source project to enhance its functionality and usability.
